@@ -1,0 +1,14 @@
+{ "columns":8,
+ "image":"res/img/pit0.png",
+ "imageheight":512,
+ "imagewidth":128,
+ "margin":0,
+ "name":"Dugeon-00-pit0",
+ "spacing":0,
+ "tilecount":256,
+ "tiledversion":"1.3.5",
+ "tileheight":16,
+ "tilewidth":16,
+ "type":"tileset",
+ "version":1.2
+}
