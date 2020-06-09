@@ -7,18 +7,12 @@ function init() {
     console.log("Aplicacion Iniciada");
     Canvas.init(500, 500, '#33DD33');
     Canvas.setImageSmoothing(false);
-    console.log(map.objectsWallLayers);
 
-    for (let i = 0; i < map.objectsWallLayers.length; i++)
-        for (let j = 0; j < map.objectsWallLayers[i].GetObjects().length; j++)
-            obj.push(map.objectsWallLayers[i].GetObjects(j));
-
-
-    //obj.push(map.objectsWallLayers[1].GetObjects());
-    //console.log( map.objectsWallLayers[0].GetObjects()[0]);
-    console.log(obj[0][0]);
-    
-    
+    for (let layer of map.objectsWallLayers) {
+        for (let o of layer.GetObjects()) {
+            obj.push(o);
+        }
+    }
     
     mainLoop();
 }
@@ -51,8 +45,6 @@ function draw() {
     }*/
     
     for (let i = 0; i < obj.length; i++) {
-        for (let j = 0; j < obj[i].length; j++) {
-            obj[i][j].draw();
-        }
+         obj[i].draw();
     }
 }

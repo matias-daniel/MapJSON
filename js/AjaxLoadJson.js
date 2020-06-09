@@ -8,7 +8,7 @@ var Ajax = {
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4) {
                 if (this.status == 400) {
-                    console.log("Error 400: el archivo " + path + " no ah sido cargado");
+                    console.log("Error 400: el archivo " + path);
                 }
                 else if (this.status == 200) {
                     dataJson = JSON.parse(this.responseText);
