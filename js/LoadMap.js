@@ -1,4 +1,4 @@
-var LoadMapJSON = function(pathToMapJson, objTilesPal) {
+var LoadMapJSON = function(pathToMapJson, objTilesPal, objPal) {
     this.rows = null;
     this.columns = null;
     this.tilesWidth = null;
@@ -8,6 +8,7 @@ var LoadMapJSON = function(pathToMapJson, objTilesPal) {
     this.palette = null;
     this.dataLayers = new Array();
     this.objectsOfTiles = new Array();
+    this.objectsOfLayerObjects = new Array();
     this.p = pathToMapJson;
     var that = this;
 
@@ -30,6 +31,7 @@ var LoadMapJSON = function(pathToMapJson, objTilesPal) {
 
         // Layers and layer objects
         that.objectsOfTiles = that.getObjectsFromTiles(that.rows, that.columns,  objJson.layers, objTilesPal, tam, pathToMapJson);
+        that.objectsOfLayerObjects = that.getObjectsFromLayerObjects(objJson.layers, objPal);
 
         // Set palette
         Ajax.loadJson("../" + objJson.tilesets[0].source, function(objJsonSource) {
@@ -44,7 +46,6 @@ var LoadMapJSON = function(pathToMapJson, objTilesPal) {
 }
 
 LoadMapJSON.prototype.getObjectsFromTiles = function(r, c, layers, objTilesPal, tam, path) {
-
     var objectsFromTiles = new Array();
 
     for (let layer of layers) {
@@ -55,7 +56,6 @@ LoadMapJSON.prototype.getObjectsFromTiles = function(r, c, layers, objTilesPal, 
 
         for (let y = 0; y < c; y++) {
             for (let x = 0; x < r; x++) {
-                //console.log(data);
                 if (layer.data[x + y * r] <= 0) continue;
                 objectsFromTiles.push(objTilesPal(typeProp, x, y, tam, path, 0));
             }
@@ -63,4 +63,32 @@ LoadMapJSON.prototype.getObjectsFromTiles = function(r, c, layers, objTilesPal, 
     }
 
     return objectsFromTiles;
+}
+
+LoadMapJSON.prototype.getObjectsFromLayerObjects = function(layers, objPal) {
+    var objectsFromLayerObjects = new Array();
+
+    for (let objLayer of layers) {
+        if (objLayer.type != 'objectgroup') continue;
+        if (!objLayer.properties) continue;
+
+        switch(objLayer.properties[0].value) {
+            case "NoProp":
+                for (let o of objLayer.objects) {
+                    objectsFromLayerObjects.push(objPal(o.type, o.x, o.y, null));
+                }
+                break;
+            case "Prop":
+                for (let o of objLayer.objects) {
+                    objectsFromLayerObjects.push(objPal(o.type, o.x, o.y, o.properties));
+                }
+                break;
+            default:
+                console.log("propiedad no default");
+                console.log(objLayer.type);
+        }
+
+    }
+
+    return objectsFromLayerObjects;
 }
