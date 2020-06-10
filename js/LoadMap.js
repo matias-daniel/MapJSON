@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 class ObjectsWallLayer {
     constructor(type, solid, data, rows, columns) {
         this.type = type;
@@ -45,6 +46,9 @@ class ObjectsWallLayer {
 }
 
 var LoadMapJSON = function(pathToMapJson) {
+=======
+var LoadMapJSON = function(pathToMapJson, objTilesPal, objPal) {
+>>>>>>> 8515ec9... Falta poco :3
     this.rows = null;
     this.columns = null;
     this.tilesWidth = null;
@@ -52,9 +56,16 @@ var LoadMapJSON = function(pathToMapJson) {
     this.width = null;
     this.height = null;
     this.palette = null;
+<<<<<<< HEAD
     this.layers = new Array();
     this.objectsWallLayers = new Array();
     //this.path = pathToMapJson;
+=======
+    this.dataLayers = new Array();
+    this.objectsOfTiles = new Array();
+    this.objectsOfLayerObjects = new Array();
+    this.p = pathToMapJson;
+>>>>>>> 8515ec9... Falta poco :3
     var that = this;
     //Ajax;
     Ajax.loadJson(pathToMapJson, function(objJson){
@@ -68,6 +79,7 @@ var LoadMapJSON = function(pathToMapJson) {
         that.height = that.columns * that.tilesHeight;
 
         // Layers and layer objects
+<<<<<<< HEAD
         for (let i = 0; i < (objJson.layers.length); i++) {
             switch(objJson.layers[i].type){
                 case "tilelayer":
@@ -82,6 +94,10 @@ var LoadMapJSON = function(pathToMapJson) {
                     }
 
                     that.objectsWallLayers.push(new ObjectsWallLayer(type, solid, objJson.layers[i].data, that.rows, that.columns));
+=======
+        that.objectsOfTiles = that.getObjectsFromTiles(that.rows, that.columns,  objJson.layers, objTilesPal, tam, pathToMapJson);
+        that.objectsOfLayerObjects = that.getObjectsFromLayerObjects(objJson.layers, objPal);
+>>>>>>> 8515ec9... Falta poco :3
 
                     break;
                 case "objectgroup":
@@ -102,6 +118,7 @@ var LoadMapJSON = function(pathToMapJson) {
     });
 }
 
+<<<<<<< HEAD
 LoadMapJSON.prototype.GetObjects = function() {
 
 }
@@ -111,3 +128,52 @@ LoadMapJSON.prototype.GetObjects = function() {
     Ajax.loadJson("../" + objJson.tilesets[0].source, function(objJsonSource) {
         
 });*/
+=======
+LoadMapJSON.prototype.getObjectsFromTiles = function(r, c, layers, objTilesPal, tam, path) {
+    var objectsFromTiles = new Array();
+
+    for (let layer of layers) {
+        if (layer.type  != "tilelayer") continue;
+        
+        var typeProp
+        if (layer.properties.length != 0) typeProp = layer.properties[0].value;
+
+        for (let y = 0; y < c; y++) {
+            for (let x = 0; x < r; x++) {
+                if (layer.data[x + y * r] <= 0) continue;
+                objectsFromTiles.push(objTilesPal(typeProp, x, y, tam, path, 0));
+            }
+        }
+    }
+
+    return objectsFromTiles;
+}
+
+LoadMapJSON.prototype.getObjectsFromLayerObjects = function(layers, objPal) {
+    var objectsFromLayerObjects = new Array();
+
+    for (let objLayer of layers) {
+        if (objLayer.type != 'objectgroup') continue;
+        if (!objLayer.properties) continue;
+
+        switch(objLayer.properties[0].value) {
+            case "NoProp":
+                for (let o of objLayer.objects) {
+                    objectsFromLayerObjects.push(objPal(o.type, o.x, o.y, null));
+                }
+                break;
+            case "Prop":
+                for (let o of objLayer.objects) {
+                    objectsFromLayerObjects.push(objPal(o.type, o.x, o.y, o.properties));
+                }
+                break;
+            default:
+                console.log("propiedad no default");
+                console.log(objLayer.type);
+        }
+
+    }
+
+    return objectsFromLayerObjects;
+}
+>>>>>>> 8515ec9... Falta poco :3
